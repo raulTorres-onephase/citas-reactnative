@@ -1,17 +1,21 @@
 /* eslint-disable prettier/prettier */
 
 import React, {useState} from 'react';
-import {StyleSheet, Text, View, FlatList, TouchableHighlight} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  Keyboard,
+  TouchableHighlight,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import Cita from './components/Cita';
 import Formulario from './components/Formulario';
 
 const App = () => {
   const [mostrarform, guardarMostrarForm] = useState(false);
-  const [citas, setCitas] = useState([
-    {id: '1', paciente: 'Hook', propietario: 'Hugo', sintomas: 'No come'},
-    {id: '2', paciente: 'Redux', propietario: 'Paco', sintomas: 'No duerme'},
-    {id: '3', paciente: 'Native', propietario: 'Luis', sintomas: 'No canta'},
-  ]);
+  const [citas, setCitas] = useState([]);
 
   const eliminarPaciente = (id) => {
     setCitas((citasActuales) => {
@@ -23,41 +27,53 @@ const App = () => {
     guardarMostrarForm(!mostrarform);
   };
 
+  const cerrarTeclado = () => {
+    Keyboard.dismiss();
+  };
+
   return (
     <>
-      <View style={styles.contenedor}>
-        <Text style={styles.titulo}>Administrador de Citas</Text>
-        <View>
-        <TouchableHighlight onPress={ () => mostrarFormulario()} style={styles.btnMostrarForm}>
-          <Text style={styles.textoMostrarForm}>Crear Nueva Cita</Text>
-        </TouchableHighlight>
-      </View>
-        <View style={styles.contenido}>
-          {mostrarform ? (
-            <>
-            <Text style={styles.titulo}>
-              Crear Nueva Cita
-              </Text>
-            <Formulario />
-            </>
-          ) : (
-            <>
-              <Text style={styles.titulo}>
-                {citas.length > 0 ? 'Administra tus Citas' : 'Agrega una Cita'}
-              </Text>
+      <TouchableWithoutFeedback onPress={ () => cerrarTeclado()}>
+        <View style={styles.contenedor}>
+          <Text style={styles.titulo}>Administrador de Citas</Text>
+          <View>
+            <TouchableHighlight
+              onPress={() => mostrarFormulario()}
+              style={styles.btnMostrarForm}>
+              <Text style={styles.textoMostrarForm}>{mostrarform ? 'Cancelar Crear Cita' : 'Crear Nueva Cita'}</Text>
+            </TouchableHighlight>
+          </View>
+          <View style={styles.contenido}>
+            {mostrarform ? (
+              <>
+                <Text style={styles.titulo}>Crear Nueva Cita</Text>
+                <Formulario
+                  citas={citas}
+                  setCitas={setCitas}
+                  guardarMostrarForm={guardarMostrarForm}
+                />
+              </>
+            ) : (
+              <>
+                <Text style={styles.titulo}>
+                  {citas.length > 0
+                    ? 'Administra tus Citas'
+                    : 'Agrega una Cita'}
+                </Text>
 
-              <FlatList
-                style={styles.listado}
-                data={citas}
-                renderItem={({item}) => (
-                  <Cita cita={item} eliminarPaciente={eliminarPaciente} />
-                )}
-                keyExtractor={(cita) => cita.id}
-              />
-            </>
-          )}
+                <FlatList
+                  style={styles.listado}
+                  data={citas}
+                  renderItem={({item}) => (
+                    <Cita cita={item} eliminarPaciente={eliminarPaciente} />
+                  )}
+                  keyExtractor={(cita) => cita.id}
+                />
+              </>
+            )}
+          </View>
         </View>
-      </View>
+      </TouchableWithoutFeedback>
     </>
   );
 };

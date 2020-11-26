@@ -1,10 +1,10 @@
 /* eslint-disable prettier/prettier */
 import React, { useState } from 'react';
-import {StyleSheet, Text, View, TextInput, Button, TouchableHighlight, Alert, ScrollView} from 'react-native';
+import {StyleSheet, Text, View, TextInput, Button, TouchableHighlight, Alert, ScrollView, SegmentedControlIOSBase} from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import shortid from 'shortid';
 
-const Formulario = () => {
+const Formulario = ({citas, setCitas, guardarMostrarForm}) => {
 
     const [paciente, guardarPaciente] = useState('');
     const [propietario, guardarPropietario] = useState('');
@@ -51,7 +51,11 @@ const Formulario = () => {
 
         const cita = { paciente, propietario, telefono, fecha, hora, sintomas };
         cita.id = shortid.generate();
-        console.log(cita);
+        //console.log(cita);
+        const citasNuevo = [...citas, cita];
+        setCitas(citasNuevo);
+
+        guardarMostrarForm(false);
     };
 
     const mostrarAlerta = () => {
